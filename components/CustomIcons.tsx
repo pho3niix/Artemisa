@@ -53,19 +53,19 @@ export function BaseBuilderIcon() {
             fontWeight="800"
             fontFamily="Inter, Arial, sans-serif"
           >
-            Base
+            Doc
           </text>
 
           {/* Builder */}
           <text
-            x="120"
+            x="100"
             y="0"
             fill="#2563EB"
             fontSize="48"
             fontWeight="800"
             fontFamily="Inter, Arial, sans-serif"
           >
-            Builder
+            Papers
           </text>
 
         </g>

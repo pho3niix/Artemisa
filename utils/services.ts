@@ -13,17 +13,16 @@ export interface IPayload {
     SessionId: string;
 };
 
-export function HashPassword(sPassword: string): string {
-    const Password = Bcrypt.hashSync(sPassword, Bcrypt.genSaltSync(10));
-    return Password;
+export function HashPassword(Password: string): string {
+    return Bcrypt.hashSync(Password, Bcrypt.genSaltSync(12));
 }
 
-export function ConfirmPassword(sPassword: string, sNewPassword: string): boolean {
-    return sPassword != sNewPassword;
+export function ConfirmPassword(Password: string, NewPassword: string): boolean {
+    return Password != NewPassword;
 }
 
-export function ComparePassword(sPassword: string, sHash: string): boolean {
-    return Bcrypt.compareSync(sPassword, sHash);
+export function ComparePassword(Password: string, Hash: string): boolean {
+    return Bcrypt.compareSync(Password, Hash);
 }
 
 export interface Filters {
@@ -40,8 +39,8 @@ function EncryptObject(object: object): string {
     return cryptojs.AES.encrypt(JSON.stringify(object), process.env.AES_SECRET).toString();
 };
 
-export function ExpireToken(tDate: Date, iMinutes: number): Date {
-    return new Date(tDate.getTime() + (iMinutes * 60 * 1000));
+export function ExpireToken(date: Date, iMinutes: number): Date {
+    return new Date(date.getTime() + (iMinutes * 60 * 1000));
 }
 
 export function CreateToken(payload: IPayload): string {

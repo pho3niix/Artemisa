@@ -27,7 +27,7 @@ function MyApp({ Component, pageProps }) {
   return (
     <MyContextProvider>
       <Head>
-        <title>Base Builder</title>
+        <title>Doc Papers</title>
         <link rel="icon" href="https://cdn.icon-icons.com/icons2/1859/PNG/512/checklist_117966.png" sizes="any" />
       </Head>
       <Component className={`${geistSans.variable} ${geistMono.variable} antialiased`} {...pageProps} />

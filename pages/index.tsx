@@ -237,8 +237,8 @@ export default function SignIn(props: { disableCustomTheme?: boolean }) {
               ¿Olvidaste tu contraseña?
             </Link>
           </Box>
-          <Divider></Divider>
-          <Box sx={{ display: 'flex', flexDirection: 'column', gap: 2 }}>
+          {/* <Divider></Divider> */}
+          {/* <Box sx={{ display: 'flex', flexDirection: 'column', gap: 2 }}>
             <Typography sx={{ textAlign: 'center' }}>
               ¿No tienes cuenta?{' '}
               <Link
@@ -249,7 +249,7 @@ export default function SignIn(props: { disableCustomTheme?: boolean }) {
                 Regístrate
               </Link>
             </Typography>
-          </Box>
+          </Box> */}
         </Card>
       </SignInContainer>
     </AppTheme>

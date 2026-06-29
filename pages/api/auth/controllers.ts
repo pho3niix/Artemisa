@@ -35,7 +35,7 @@ export async function Login(req: NextApiRequest, res: NextApiResponse, body: ILo
     res.setHeader('Set-Cookie', cookieString);
 
     return res.status(200).json({
-        message: `Welcome to Base Builder ${User.FullName}`,
+        message: `Welcome to Doc Papers ${User.FullName}`,
         results: {
             userId: User.UserId,
             token: Session,
