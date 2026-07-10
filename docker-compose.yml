@@ -1,8 +1,51 @@
 version: '3'
 
 services:
+  app_cloud:
+    image: node:24.13.0-alpine3.22
+    profiles: ["cloud"] # 👈 Solo se levanta si llamas al perfil cloud
+    command: sh -c "yarn install && yarn migrations && yarn build && PORT=5003 yarn start"
+    ports:
+      - 80:5003
+    working_dir: /app # 👈 Añadido para asegurar la ruta de ejecución
+    environment:
+      - DB_URL=${PROD_DB_URL}
+    volumes:
+      - ./components:/app/components
+      - ./db:/app/db
+      - ./next-env.d.ts:/app/next-env.d.ts
+      - ./package.json:/app/package.json
+      - ./pages:/app/pages
+      - ./tsconfig.json:/app/tsconfig.json
+      - ./types:/app/types
+      - ./utils:/app/utils
+      - ./yarn.lock:/app/yarn.lock
+      - cache:/usr/local/share/.cache/yarn/v6
+      - /app/node_modules
+      - .:/app
+
+  test_cloud:
+    image: node:24.13.0-alpine3.22
+    profiles: ["cloud"] # 👈 Solo se levanta si llamas al perfil cloud
+    command: sh -c "yarn install && npm run migrations && npm run test"
+    ports: 
+      - 5005:5004 # 👈 Cambiado a 5005 para evitar colisión con el local (5004)
+    environment:
+      - DB_URL=${TEST_DB_URL}
+    restart: unless-stopped
+    working_dir: /app
+    volumes:
+      - ./test:/app/test
+      - ./jest.config.js:/app/jest.config.js
+      - ./db:/app/db
+      - ./package.json:/app/package.json
+      - ./pages:/app/pages
+      - ./tsconfig.json:/app/tsconfig.json
+      - ./utils:/app/utils
+      - cache:/usr/local/share/.cache/yarn/v6
+      - node_modules:/app/node_modules # 👈 Typo 'å' eliminado
+      
   db:
-  # I used this postgres version because is installed on my personal computer.
     image: postgres:17.7
     environment:
       POSTGRES_DB: postgres
@@ -11,7 +54,6 @@ services:
     expose:
       - 5440
     ports:
-      # Expose weird port on host to avoid collisions
       - 5440:5432
     volumes:
       - dbdata:/var/lib/postgresql/data
@@ -34,9 +76,7 @@ services:
       - /app/node_modules
       - .:/app
     ports:
-      # Weird port to avoid collisions
       - 5003:5003
-    # Now it will run on a different server
     depends_on:
       - db
     environment:
@@ -55,7 +95,6 @@ services:
     expose:
       - 5441
     ports:
-      # Expose weird port on host to avoid collisions
       - 5441:5432
     volumes:
       - dbdata:/var/lib/postgresql/data
@@ -82,7 +121,6 @@ services:
       - node_modules:/app/node_modules
     depends_on:
       - db_test
-
 
 volumes:
   dbdata:

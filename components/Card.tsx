@@ -8,7 +8,6 @@ import Typography from '@mui/material/Typography';
 import BorderColorIcon from '@mui/icons-material/BorderColor';
 import HighlightOffIcon from '@mui/icons-material/HighlightOff';
 import CheckCircleOutlineIcon from '@mui/icons-material/CheckCircleOutline';
-import { IList } from '../pages/api/notes/queries';
 import DeleteButton from './DeleteButton';
 import TextField from '@mui/material/TextField';
 import { useState, useRef, useContext } from 'react';
@@ -23,11 +22,7 @@ const bull = (
     </Box>
 );
 
-interface IChildren {
-    children: IList;
-}
-
-export default function Note({ children }: IChildren) {
+export default function Note({ children }: any) {
 
     const [EditForm, SetEditForm] = useState(false);
     const { Trigger, LaunchTrigger } = useContext(MyContext);
@@ -58,7 +53,7 @@ export default function Note({ children }: IChildren) {
         }
     }
 
-    function UpdateNote(NoteId: IList['NoteId']): void {
+    function UpdateNote(NoteId: any): void {
         fetch(`/api/notes?NoteId=${NoteId}`, {
             method: 'PUT',
             body: JSON.stringify({

@@ -6,7 +6,6 @@ import DialogContent from '@mui/material/DialogContent';
 import DialogContentText from '@mui/material/DialogContentText';
 import DialogTitle from '@mui/material/DialogTitle';
 import ClearIcon from '@mui/icons-material/Clear';
-import { IList } from '../pages/api/notes/queries';
 import { MyContext } from '../utils/MyContext';
 
 export default function AlertDialog({ children }) {
@@ -22,7 +21,7 @@ export default function AlertDialog({ children }) {
         setOpen(false);
     };
 
-    function DeleteElement(NoteId: IList['NoteId']): void {
+    function DeleteElement(NoteId: any): void {
         console.log(NoteId)
         fetch(`/api/notes?NoteId=${NoteId}`, {
             method: 'DELETE'
