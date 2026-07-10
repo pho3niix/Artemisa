@@ -8,8 +8,6 @@ services:
     ports:
       - 80:5003
     working_dir: /app # 👈 Añadido para asegurar la ruta de ejecución
-    environment:
-      - DB_URL=postgres://postgres:postgres@db:5432/postgres
     volumes:
       - ./components:/app/components
       - ./db:/app/db
