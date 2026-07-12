@@ -1,13 +1,9 @@
 version: '3'
 
 services:
-  app_cloud:
+  development:
     image: node:24.13.0-alpine3.22
-    profiles: ["cloud"] # 👈 Solo se levanta si llamas al perfil cloud
-    command: sh -c "yarn install && yarn migrations && yarn build && PORT=5003 yarn start"
-    ports:
-      - 80:5003
-    working_dir: /app # 👈 Añadido para asegurar la ruta de ejecución
+    command: sh -c "yarn install && yarn migrations && PORT=5003 yarn dev"
     volumes:
       - ./components:/app/components
       - ./db:/app/db
@@ -21,13 +17,19 @@ services:
       - cache:/usr/local/share/.cache/yarn/v6
       - /app/node_modules
       - .:/app
+    ports:
+      - 5003:5003
+    environment:
+      DB_URL: postgres://postgres:postgres@db:5432/postgres
+    env_file:
+      - .env
+    working_dir: /app
 
   test_cloud:
     image: node:24.13.0-alpine3.22
-    profiles: ["cloud"] # 👈 Solo se levanta si llamas al perfil cloud
     command: sh -c "yarn install && npm run migrations && npm run test"
     ports: 
-      - 5005:5004 # 👈 Cambiado a 5005 para evitar colisión con el local (5004)
+      - 5005:5004
     environment:
       - DB_URL=${TEST_DB_URL}
     restart: unless-stopped
@@ -41,7 +43,7 @@ services:
       - ./tsconfig.json:/app/tsconfig.json
       - ./utils:/app/utils
       - cache:/usr/local/share/.cache/yarn/v6
-      - node_modules:/app/node_modules # 👈 Typo 'å' eliminado
+      - node_modules:/app/node_modules
       
   db:
     image: postgres:17.7
