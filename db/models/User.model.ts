@@ -1,4 +1,4 @@
-import { Model, DataTypes, InferAttributes, InferCreationAttributes, ForeignKey } from 'sequelize';
+import { Model, DataTypes, InferAttributes, InferCreationAttributes, ForeignKey, literal } from 'sequelize';
 import { Database } from '../db';
 
 export interface IUsers {
@@ -102,11 +102,11 @@ Users.init(
         },
         CreatedAt: {
             type: DataTypes.DATE,
-            defaultValue: Database.literal('CURRENT_TIMESTAMP')
+            defaultValue: literal('CURRENT_TIMESTAMP')
         },
         UpdatedAt: {
             type: DataTypes.DATE,
-            defaultValue: Database.literal('CURRENT_TIMESTAMP')
+            defaultValue: literal('CURRENT_TIMESTAMP')
 
         },
         FullName: {

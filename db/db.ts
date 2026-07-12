@@ -6,18 +6,16 @@ const Environments = {
     // preproduction: process.env.PG_CONNECTION_ALPHA,
     // production: process.env.PG_CONNECTION_PRODUCTION,
     // testing: process.env.PG_CONNECTION_QA,
-    development: process.env.DB_URL,
-    local: process.env.DB_URL_DEV,
+    development: process.env.DB_URL_DEV,
+    local: process.env.DB_URL,
     // supertest: process.env.PG_CONNECTION_SUPERTEST
 };
 
-const Default = process.env.DB_URL;
-
 let sequelize = null;
 
-switch (Environments[process.env.NODE_ENV]) {
+switch (process.env.ENV) {
     case 'development':
-        sequelize = new Sequelize(Environments[process.env.NODE_ENV], {
+        sequelize = new Sequelize(Environments[process.env.ENV], {
             logging: false,
             dialect: 'postgres',
             dialectOptions: {
@@ -29,14 +27,8 @@ switch (Environments[process.env.NODE_ENV]) {
         });
         break;
     case 'local':
-        sequelize = new Sequelize(Environments[process.env.NODE_ENV] ?? Default, {
-            logging: process.env.NODE_ENV.includes('local'),
-            dialect: 'postgres'
-        });
-        break;
-    default:
-        sequelize = new Sequelize(Environments[process.env.NODE_ENV] ?? Default, {
-            logging: process.env.NODE_ENV.includes('local'),
+        sequelize = new Sequelize(Environments[process.env.ENV], {
+            logging: true,
             dialect: 'postgres'
         });
         break;
@@ -53,21 +45,16 @@ switch (Environments[process.env.NODE_ENV]) {
 
 let pool = null;
 
-switch (Environments[process.env.NODE_ENV]) {
+switch (process.env.ENV) {
     case 'development':
         pool = new Pool({
-            connectionString: process.env.DB_URL,
+            connectionString: process.env.DB_URL_DEV,
             ssl: {
-                rejectUnauthorized: false 
+                rejectUnauthorized: false
             }
         });
         break;
     case 'local':
-        pool = new Pool({
-            connectionString: process.env.DB_URL
-        });
-        break;
-    default:
         pool = new Pool({
             connectionString: process.env.DB_URL
         });

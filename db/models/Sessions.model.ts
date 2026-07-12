@@ -50,11 +50,11 @@ Sessions.init(
         },
         CreatedAt: {
             type: DataTypes.DATE,
-            defaultValue: Database.literal('CURRENT_TIMESTAMP')
+            defaultValue: literal('CURRENT_TIMESTAMP')
         },
         UpdatedAt: {
             type: DataTypes.DATE,
-            defaultValue: Database.literal('CURRENT_TIMESTAMP')
+            defaultValue: literal('CURRENT_TIMESTAMP')
 
         }
     },

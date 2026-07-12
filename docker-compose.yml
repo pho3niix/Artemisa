@@ -22,14 +22,13 @@ services:
     env_file:
       - .env
     working_dir: /app
+    restart: unless-stopped
 
   test_cloud:
     image: node:24.13.0-alpine3.22
     command: sh -c "yarn install && npm run migrations && npm run test"
     ports: 
       - 5005:5004
-    environment:
-      - DB_URL=${TEST_DB_URL}
     restart: unless-stopped
     working_dir: /app
     volumes:
@@ -78,8 +77,8 @@ services:
     depends_on:
       - db
     environment:
-      DB_URL: postgres://postgres:postgres@db:5432/postgres
-      NODE_ENV: local
+      - DB_URL=postgres://postgres:postgres@db:5432/postgres
+      - ENV=local
     env_file:
       - .env
     working_dir: /app
@@ -92,9 +91,9 @@ services:
       POSTGRES_USER: postgres
       POSTGRES_PASSWORD: postgres
     expose:
-      - 5441
+      - 5432
     ports:
-      - 5441:5432
+      - 5432:5441
     volumes:
       - dbdata:/var/lib/postgresql/data
     restart: always
