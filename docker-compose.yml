@@ -18,9 +18,7 @@ services:
       - /app/node_modules
       - .:/app
     ports:
-      - 5003:5003
-    environment:
-      DB_URL: postgres://postgres:postgres@db:5432/postgres
+      - 80:5003
     env_file:
       - .env
     working_dir: /app
@@ -81,6 +79,7 @@ services:
       - db
     environment:
       DB_URL: postgres://postgres:postgres@db:5432/postgres
+      NODE_ENV: local
     env_file:
       - .env
     working_dir: /app

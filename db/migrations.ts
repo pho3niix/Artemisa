@@ -7,6 +7,8 @@ function Migrations() {
     return (async () => {
         await Database.sync({ alter: true });
 
+        console.log(process.env.NODE_ENV)
+
         await Db.query(`CREATE EXTENSION IF NOT EXISTS unaccent`);
 
         console.log('Users', Users == Database.models.Users);
