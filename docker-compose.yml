@@ -23,6 +23,8 @@ services:
       - .env
     working_dir: /app
     restart: unless-stopped
+    depends_on:
+      - proxy_reverse
     networks:
       - proxy_net
 
@@ -130,8 +132,6 @@ services:
     container_name: proxy_reverse
     ports:
       - "80:80"
-    depends_on:
-      - development
     volumes:
       - ./nginx.conf:/etc/nginx/nginx.conf
       - /etc/timezone:/etc/timezone:ro
