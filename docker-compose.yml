@@ -23,8 +23,6 @@ services:
       - .env
     working_dir: /app
     restart: unless-stopped
-    depends_on:
-      - proxy_reverse
     networks:
       - proxy_net
 
@@ -134,9 +132,6 @@ services:
       - "80:80"
     depends_on:
       - development
-      - testing
-      - preproduction
-      - production
     volumes:
       - ./nginx.conf:/etc/nginx/nginx.conf
       - /etc/timezone:/etc/timezone:ro
