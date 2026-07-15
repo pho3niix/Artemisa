@@ -1,6 +1,7 @@
 'use client';
 
 import * as React from 'react';
+import { Loader2 } from 'lucide-react';
 import Box from '@mui/material/Box';
 import Button from '@mui/material/Button';
 import Checkbox from '@mui/material/Checkbox';
@@ -71,6 +72,7 @@ export default function SignIn(props: { disableCustomTheme?: boolean }) {
   const [passwordErrorMessage, setPasswordErrorMessage] = React.useState('');
   const [open, setOpen] = React.useState(false);
   const router = useRouter();
+  const [isLoading, setLoading] = React.useState(false);
 
   const handleClickOpen = () => {
     setOpen(true);
@@ -133,9 +135,12 @@ export default function SignIn(props: { disableCustomTheme?: boolean }) {
         credentials: 'include'
       })
 
-      const Data = await Response.json()
+      const Data = await Response.json();
+
+      setLoading(true)
 
       if (!Response.ok) {
+        setLoading(false)
         throw new Error(JSON.stringify(Data))
       } else {
         toast.success(Data.message)
@@ -143,6 +148,7 @@ export default function SignIn(props: { disableCustomTheme?: boolean }) {
         setTimeout(() => {
           router.push("/dashboard");
           router.refresh();
+
         }, 1000);
 
         return Data;
@@ -225,8 +231,13 @@ export default function SignIn(props: { disableCustomTheme?: boolean }) {
               type="submit"
               fullWidth
               variant="contained"
+              disabled={isLoading}
             >
-              Iniciar sesión
+              {isLoading ? (
+                <div className="flex items-center justify-center gap-2">
+                  <Loader2 color='black' size={30} className="spinner-animation"/>
+                </div>
+              ) : "Iniciar Sesión"}
             </Button>
             <Link
               component="button"

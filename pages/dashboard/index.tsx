@@ -1,5 +1,5 @@
 import * as React from "react";
-import AppTheme from "../shared-theme/AppTheme";
+import AppTheme from "../../shared-theme/AppTheme";
 import { CssBaseline } from "@mui/material";
 
 
