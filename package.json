@@ -6,7 +6,6 @@
     "build": "next build",
     "start": "next start",
     "post-update": "yarn upgrade --latest",
-    "migrations": "ts-node db/migrations.ts",
     "test": "jest --forceExit"
   },
   "dependencies": {

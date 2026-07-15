@@ -53,7 +53,7 @@ export function BaseBuilderIcon() {
             fontWeight="800"
             fontFamily="Inter, Arial, sans-serif"
           >
-            Doc
+            Arte
           </text>
 
           {/* Builder */}
@@ -65,7 +65,7 @@ export function BaseBuilderIcon() {
             fontWeight="800"
             fontFamily="Inter, Arial, sans-serif"
           >
-            Papers
+            Misa
           </text>
 
         </g>

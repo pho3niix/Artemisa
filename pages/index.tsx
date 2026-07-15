@@ -121,7 +121,7 @@ export default function SignIn(props: { disableCustomTheme?: boolean }) {
     const data = new FormData(event.currentTarget);
 
     try {
-      const Response = await fetch('/api/auth', {
+      const Response = await fetch('http://localhost:3000/api/v1/sp/session', {
         method: "POST",
         body: JSON.stringify({
           Email: data.get('email'),
@@ -129,7 +129,8 @@ export default function SignIn(props: { disableCustomTheme?: boolean }) {
         }),
         headers: {
           'Content-type': 'application/json; charset=UTF-8',
-        }
+        },
+        credentials: 'include'
       })
 
       const Data = await Response.json()
