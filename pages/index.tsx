@@ -21,7 +21,9 @@ import AppTheme from '../shared-theme/AppTheme';
 import ColorModeSelect from '../shared-theme/ColorModeSelect';
 import { GoogleIcon, FacebookIcon, SitemarkIcon, BaseBuilderIcon } from '../components/CustomIcons';
 import { toast } from "react-toastify";
-import { useRouter } from "next/navigation"
+import { useRouter } from "next/navigation";
+import { httpClient } from "../utils/HttpClient";
+import { useAuth } from "../utils/MyContext";
 
 const Card = styled(MuiCard)(({ theme }) => ({
   display: 'flex',
@@ -73,6 +75,7 @@ export default function SignIn(props: { disableCustomTheme?: boolean }) {
   const [open, setOpen] = React.useState(false);
   const router = useRouter();
   const [isLoading, setLoading] = React.useState(false);
+  const { setIsAuthenticated, setUserData } = useAuth();
 
   const handleClickOpen = () => {
     setOpen(true);
@@ -122,33 +125,36 @@ export default function SignIn(props: { disableCustomTheme?: boolean }) {
 
     const data = new FormData(event.currentTarget);
 
+    setLoading(true)
+
     try {
-      const Response = await fetch('http://localhost:3000/api/v1/sp/session', {
-        method: "POST",
-        body: JSON.stringify({
+      const response = await httpClient('/api/v1/sp/session', {
+        method: 'POST',
+        body: {
           Email: data.get('email'),
           Password: data.get('password'),
-        }),
-        headers: {
-          'Content-type': 'application/json; charset=UTF-8',
         },
-        credentials: 'include'
-      })
+        skipAuth: false,
+      });
 
-      const Data = await Response.json();
+      const Data = await response.json();
 
-      setLoading(true)
-
-      if (!Response.ok) {
+      if (!response.ok) {
         setLoading(false)
         throw new Error(JSON.stringify(Data))
       } else {
         toast.success(Data.message)
 
+        console.log("login user", Data.results.UserId)
+
+        setUserData(Data.results)
+
+        setIsAuthenticated(true);
+
         setTimeout(() => {
           router.push("/dashboard");
           router.refresh();
-
+          setLoading(false)
         }, 1000);
 
         return Data;
@@ -157,6 +163,7 @@ export default function SignIn(props: { disableCustomTheme?: boolean }) {
     } catch (error) {
       const { message, statusCode, errors } = JSON.parse(error.message)
       console.log("Error", message, statusCode, errors)
+      setLoading(false)
       toast.error(message)
     }
 
@@ -235,7 +242,7 @@ export default function SignIn(props: { disableCustomTheme?: boolean }) {
             >
               {isLoading ? (
                 <div className="flex items-center justify-center gap-2">
-                  <Loader2 color='black' size={30} className="spinner-animation"/>
+                  <Loader2 color='black' size={30} className="spinner-animation" />
                 </div>
               ) : "Iniciar Sesión"}
             </Button>

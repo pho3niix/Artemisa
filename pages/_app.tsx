@@ -1,7 +1,9 @@
+'use client';
+
 import Layout from "../components/Layout";
 import '../utils/global.css';
 import '../utils/normalize.css';
-import { MyContextProvider } from '../utils/MyContext';
+import { AuthProvider } from '../utils/MyContext';
 import { Geist, Geist_Mono } from "next/font/google";
 import type { Metadata } from "next";
 import Head from 'next/head';
@@ -25,7 +27,7 @@ export const metadata: Metadata = {
 
 function MyApp({ Component, pageProps }) {
   return (
-    <MyContextProvider>
+    <AuthProvider>
       <Head>
         <title>Artemisa</title>
         <link rel="icon" href="https://cdn.icon-icons.com/icons2/1859/PNG/512/checklist_117966.png" sizes="any" />
@@ -43,7 +45,7 @@ function MyApp({ Component, pageProps }) {
           //pauseOnHover            // Pausa el tiempo si el mouse está encima
           theme="colored"         // Opciones: "light", "dark", "colored" (¡Prueba 'colored' para fondos con color sólido!)
         />
-    </MyContextProvider>
+    </AuthProvider>
   );
 }
 export default MyApp;
