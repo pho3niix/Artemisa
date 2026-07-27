@@ -2,7 +2,6 @@
 
 import { createContext, useContext, useState } from 'react';
 
-// 1. Definimos la estructura de los datos del usuario
 interface UserData {
   UserId: string;
   Email: string;
@@ -54,7 +53,7 @@ export const AuthProvider = ({ children }: { children: React.ReactNode }) => {
       setIsAuthenticated(false);
     }
   };
-
+  
   return (
     <AuthContext.Provider value={{ isAuthenticated, setIsAuthenticated, loading, userData, setUserData, setLoading }}>
       {children}

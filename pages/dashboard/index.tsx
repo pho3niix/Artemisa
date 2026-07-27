@@ -14,8 +14,8 @@ export default function Dashboard(props: { disableCustomTheme?: boolean }) {
 
     useEffect(() => {
         (async () => {
-            const userId = userData.UserId
             try {
+                const userId = userData?.UserId
                 const response = await httpClient(`/api/v1/sp/users/:id/profile`, {
                     method: 'GET',
                     pathParams: {
@@ -33,9 +33,13 @@ export default function Dashboard(props: { disableCustomTheme?: boolean }) {
                 }
 
             } catch (error) {
-                const { message, statusCode, errors } = JSON.parse(error.message)
-                console.log("Error", message, statusCode, errors)
-                toast.error(message)
+                try {
+                    const { message, statusCode, errors } = JSON.parse(error.message);
+                    console.log("Error", message, statusCode, errors);
+                    toast.error(message);
+                } catch {
+                    toast.error("Ocurrió un error");
+                }
             }
         })()
     }, [userData?.UserId])

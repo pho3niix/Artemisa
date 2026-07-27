@@ -45,7 +45,7 @@ export async function httpClient(url: string, options: any = {}) {
         if (!skipAuth && (response.status === 401 || response.status === 403)) {
             if (typeof window !== 'undefined') {
                 const currentPath = window.location.pathname;
-                // window.location.href = `/?redirect=${encodeURIComponent(currentPath)}`;
+                window.location.href = `/?redirect=${encodeURIComponent(currentPath)}`;
             }
         }
 
