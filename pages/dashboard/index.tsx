@@ -4,12 +4,13 @@ import AppTheme from "../../shared-theme/AppTheme";
 import { CssBaseline } from "@mui/material";
 import { ProtectedRoute } from "../../utils/ProtectedRoute";
 import { httpClient } from "../../utils/HttpClient";
-import { use, useEffect, useState } from "react";
+import { useEffect, useState } from "react";
 import { toast } from "react-toastify"
 import { useAuth } from "../../utils/MyContext";
 
 export default function Dashboard(props: { disableCustomTheme?: boolean }) {
     const { userData } = useAuth();
+    const [profileData, setProfileData] = useState(null);
 
     useEffect(() => {
         (async () => {
@@ -27,6 +28,7 @@ export default function Dashboard(props: { disableCustomTheme?: boolean }) {
                 if (!response.ok) {
                     throw new Error(JSON.stringify(Data))
                 } else {
+                    setProfileData(Data.results)
                     return Data;
                 }
 
@@ -36,14 +38,21 @@ export default function Dashboard(props: { disableCustomTheme?: boolean }) {
                 toast.error(message)
             }
         })()
-    }, [])
+    }, [userData?.UserId])
 
     return (
-        // <ProtectedRoute>
+        <ProtectedRoute>
             <AppTheme {...props}>
                 <CssBaseline enableColorScheme />
-                <p>hola mundo</p>
+                <h1>Perfil</h1>
+
+                {/* Validamos que profileData exista antes de intentar leer sus propiedades */}
+                {profileData ? (
+                    <p>{profileData.Name} {profileData.LastName}</p>
+                ) : (
+                    <p>Cargando información...</p>
+                )}
             </AppTheme>
-        // </ProtectedRoute>
+        </ProtectedRoute>
     );
 }

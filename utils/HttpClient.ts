@@ -1,13 +1,4 @@
-// utils/httpClient.ts
-
-interface FetchOptions extends RequestInit {
-    params?: Record<string, string | number | boolean>;
-    pathParams?: Record<string, string | number>;
-    skipAuth?: boolean;
-    headers?: Record<string, string>;
-}
-
-export async function httpClient(url: string, options: FetchOptions = {}) {
+export async function httpClient(url: string, options: any = {}) {
     const {
         params,
         pathParams,
@@ -18,7 +9,7 @@ export async function httpClient(url: string, options: FetchOptions = {}) {
         ...restOptions
     } = options;
 
-    let finalUrl = 'http://3001' + url;
+    let finalUrl = 'http://localhost:3000' + url;
 
     // 1. Reemplazar Path Params (:id)
     if (pathParams) {
