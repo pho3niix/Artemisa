@@ -153,8 +153,6 @@ export default function SignIn(props: { disableCustomTheme?: boolean }) {
 
         setTimeout(() => {
           router.push("/dashboard");
-          router.refresh();
-          setLoading(false)
         }, 1000);
 
         return Data;

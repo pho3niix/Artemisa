@@ -1,32 +1,33 @@
 // utils/httpClient.ts
 
 interface FetchOptions extends RequestInit {
-    params?: Record<string, string | number>;
-    token?: string;         // Token opcional si se quiere pasar de forma manual
-    skipToken?: boolean;    // Flag para omitir el uso del token en rutas públicas (ej. /login)
+    params?: Record<string, string | number | boolean>;
+    pathParams?: Record<string, string | number>;
+    skipAuth?: boolean;
+    headers?: Record<string, string>;
 }
 
-export async function httpClient(url: string, options: any = {}) {
+export async function httpClient(url: string, options: FetchOptions = {}) {
     const {
-        params,       // Para query params (?search=abc)
-        pathParams,   // Para path params (/api/v1/users/:id -> { id: 123 })
+        params,
+        pathParams,
         method = 'GET',
         body,
-        skipAuth = false, // Por defecto incluye credenciales
+        skipAuth = false,
         headers,
         ...restOptions
     } = options;
 
-    let finalUrl = 'http://localhost:3000' + url;
+    let finalUrl = 'http://ec2-52-90-160-166.compute-1.amazonaws.com/dev' + url;
 
-    // 1. Reemplazar Path Params si existen (ej. /users/:id -> /users/123)
+    // 1. Reemplazar Path Params (:id)
     if (pathParams) {
         Object.entries(pathParams).forEach(([key, value]) => {
             finalUrl = finalUrl.replace(`:${key}`, encodeURIComponent(String(value)));
         });
     }
 
-    // 2. Añadir Query Parameters opcionales si existen
+    // 2. Añadir Query Parameters
     if (params) {
         const queryParams = new URLSearchParams(
             Object.entries(params).map(([key, value]) => [key, String(value)])
@@ -35,11 +36,9 @@ export async function httpClient(url: string, options: any = {}) {
     }
 
     // 3. Configuración base para fetch
-    const defaultOptions: any = {
+    const defaultOptions: RequestInit = {
         method,
-        // Si skipAuth es true (ej. en el login), omitimos credentials. Si es false (por defecto), 
-        // el navegador adjunta automáticamente la cookie "sesion" gracias a 'include'.
-        ...(skipAuth ? {} : { credentials: 'include' }),
+        credentials: 'include',
         headers: {
             ...(body && typeof body === 'object' ? { 'Content-Type': 'application/json' } : {}),
             ...(headers || {}),
@@ -51,20 +50,18 @@ export async function httpClient(url: string, options: any = {}) {
     try {
         const response = await fetch(finalUrl, defaultOptions);
 
-        console.log("Response", response)
-
-        // Si no es una ruta pública y el servidor bota un 401 o 403, redirigimos al login
+        // Si la sesión expiró o no es válida
         if (!skipAuth && (response.status === 401 || response.status === 403)) {
             if (typeof window !== 'undefined') {
                 const currentPath = window.location.pathname;
-                window.location.href = `/?redirect=${encodeURIComponent(currentPath)}`;
+                // window.location.href = `/?redirect=${encodeURIComponent(currentPath)}`;
             }
-            throw new Error('Sesión no autorizada o expirada');
         }
 
         return response;
 
     } catch (error) {
-        throw error;
+        console.error("Error en httpClient fetch:", error);
+        throw error; // Re-lanzar para que el .catch() de tu componente pueda gestionarlo
     }
 }
