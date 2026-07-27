@@ -18,7 +18,7 @@ export async function httpClient(url: string, options: FetchOptions = {}) {
         ...restOptions
     } = options;
 
-    let finalUrl = 'http://ec2-52-90-160-166.compute-1.amazonaws.com/dev' + url;
+    let finalUrl = 'http://3001' + url;
 
     // 1. Reemplazar Path Params (:id)
     if (pathParams) {
