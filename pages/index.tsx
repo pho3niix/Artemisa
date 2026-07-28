@@ -75,8 +75,8 @@ export default function SignIn(props: { disableCustomTheme?: boolean }) {
   const [passwordErrorMessage, setPasswordErrorMessage] = React.useState('');
   const [open, setOpen] = React.useState(false);
   const router = useRouter();
-  const [isLoading, setLoading] = React.useState(false);
-  const { setIsAuthenticated, setUserData } = useAuth();
+  const [isLoading, setSpinner] = React.useState(false);
+  const { setIsAuthenticated, setUserData, setLoading } = useAuth();
 
   const handleClickOpen = () => {
     setOpen(true);
@@ -125,11 +125,11 @@ export default function SignIn(props: { disableCustomTheme?: boolean }) {
     }
 
     const data = new FormData(event.currentTarget);
-
-    setLoading(true)
+    
+    setLoading(true);
 
     try {
-      setLoading(true);
+      setSpinner(true);
       const response = await httpClient('/api/v1/sp/session', {
         method: 'POST',
         body: {
@@ -142,18 +142,16 @@ export default function SignIn(props: { disableCustomTheme?: boolean }) {
       const Data = await response.json();
 
       if (!response.ok) {
-        setLoading(false);
+        setSpinner(false);
         throw new Error(JSON.stringify(Data));
       } else {
         toast.success(Data.message);
 
-        console.log("login user", Data.results.UserId);
-
         setUserData(Data.results);
 
         setTimeout(() => {
-          router.push("/dashboard");
-          setLoading(false);
+          window.location.href = '/dashboard';
+          setSpinner(false);
         }, 1000);
 
         return Data;
@@ -166,8 +164,10 @@ export default function SignIn(props: { disableCustomTheme?: boolean }) {
         toast.error(message);
       } catch {
         toast.error("Ocurrió un error al iniciar sesión");
+      } finally {
+        setSpinner(false);
+        setLoading(false);
       }
-      setLoading(false);
     }
 
   };

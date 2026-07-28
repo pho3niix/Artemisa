@@ -44,8 +44,12 @@ export async function httpClient(url: string, options: any = {}) {
         // Si la sesión expiró o no es válida
         if (!skipAuth && (response.status === 401 || response.status === 403)) {
             if (typeof window !== 'undefined') {
-                const currentPath = window.location.pathname;
-                window.location.href = `/?redirect=${encodeURIComponent(currentPath)}`;
+                // LIMPIEZA DE EMERGENCIA: Rompe cualquier bucle limpiando el estado local
+                localStorage.removeItem('userData');
+                localStorage.removeItem('is_authenticated');
+                
+                // Redirigir al login
+                window.location.href = `/`;
             }
         }
 
