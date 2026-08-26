@@ -6,6 +6,7 @@ import { httpClient } from "../../utils/HttpClient";
 import { useEffect, useState } from "react";
 import { toast } from "react-toastify";
 import { useAuth } from "../../utils/MyContext";
+import List from '../../components/crud/List'
 
 export default function Dashboard() {
     const { userData } = useAuth();
@@ -44,7 +45,7 @@ export default function Dashboard() {
 
     return (
         <DashboardLayout>
-            <p>Esto es branches!</p>
+            <List />
         </DashboardLayout>
     );
 }
