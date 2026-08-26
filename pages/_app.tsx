@@ -1,6 +1,5 @@
 'use client';
 
-import Layout from "../components/Layout";
 import '../utils/global.css';
 import '../utils/normalize.css';
 import { AuthProvider } from '../utils/MyContext';
@@ -9,6 +8,9 @@ import type { Metadata } from "next";
 import Head from 'next/head';
 import { ToastContainer } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
+
+import AppNavbar from '../components/dashboard/AppNavbar';
+import SideMenu from '../components/dashboard/SideMenu';
 
 const geistSans = Geist({
   variable: "--font-geist-sans",
@@ -33,18 +35,18 @@ function MyApp({ Component, pageProps }) {
         <link rel="icon" href="https://cdn.icon-icons.com/icons2/1859/PNG/512/checklist_117966.png" sizes="any" />
       </Head>
       <Component className={`${geistSans.variable} ${geistMono.variable} antialiased`} {...pageProps} />
-      <ToastContainer 
-          position="top-right"
-          autoClose={4000}       // Tiempo en milisegundos para cerrarse solo
-          hideProgressBar={false} // Muestra u oculta la barra de progreso inferior
-          newestOnTop={false}
-          closeOnClick            // Se cierra al hacerle click encima
-          rtl={false}
-          pauseOnFocusLoss
-          draggable               // Permite arrastrar el toast para quitarlo
-          //pauseOnHover            // Pausa el tiempo si el mouse está encima
-          theme="colored"         // Opciones: "light", "dark", "colored" (¡Prueba 'colored' para fondos con color sólido!)
-        />
+      <ToastContainer
+        position="top-right"
+        autoClose={4000}       // Tiempo en milisegundos para cerrarse solo
+        hideProgressBar={false} // Muestra u oculta la barra de progreso inferior
+        newestOnTop={false}
+        closeOnClick            // Se cierra al hacerle click encima
+        rtl={false}
+        pauseOnFocusLoss
+        draggable               // Permite arrastrar el toast para quitarlo
+        //pauseOnHover            // Pausa el tiempo si el mouse está encima
+        theme="colored"         // Opciones: "light", "dark", "colored" (¡Prueba 'colored' para fondos con color sólido!)
+      />
     </AuthProvider>
   );
 }

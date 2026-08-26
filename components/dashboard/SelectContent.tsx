@@ -12,6 +12,9 @@ import AddRoundedIcon from '@mui/icons-material/AddRounded';
 import DevicesRoundedIcon from '@mui/icons-material/DevicesRounded';
 import SmartphoneRoundedIcon from '@mui/icons-material/SmartphoneRounded';
 import ConstructionRoundedIcon from '@mui/icons-material/ConstructionRounded';
+import { useEffect, useState } from 'react';
+import { useAuth } from '../../utils/MyContext';
+import { httpClient } from '../../utils/HttpClient';
 
 const Avatar = styled(MuiAvatar)(({ theme }) => ({
   width: 28,
@@ -27,12 +30,40 @@ const ListItemAvatar = styled(MuiListItemAvatar)({
 });
 
 export default function SelectContent() {
-  const [company, setCompany] = React.useState('');
+  const [company, setCompany] = useState('');
+  const { userData } = useAuth();
+  const [branches, setBranches] = useState([]);
+
+  useEffect(() => {
+    (async () => {
+      try {
+
+        const response = await httpClient('/api/v1/sp/principals/:PrinicipalId/branches', {
+          method: 'GET',
+          pathParams: {
+            PrinicipalId: userData?.UserId
+          }
+        });
+
+        const Data = await response.json();
+
+        if (!response.ok) {
+          throw new Error(JSON.stringify(Data))
+        } else {
+          setBranches(Data.results)
+          return Data;
+        }
+
+      } catch (error) {
+        console.error('Error fetching branches:', error);
+      }
+    })();
+  }, [userData?.UserId]);
 
   const handleChange = (event: SelectChangeEvent) => {
     setCompany(event.target.value as string);
   };
-
+  
   return (
     <Select
       labelId="company-select"
@@ -56,40 +87,17 @@ export default function SelectContent() {
         },
       }}
     >
-      <ListSubheader sx={{ pt: 0 }}>Production</ListSubheader>
-      <MenuItem value="">
-        <ListItemAvatar>
-          <Avatar alt="Sitemark web">
-            <DevicesRoundedIcon sx={{ fontSize: '1rem' }} />
-          </Avatar>
-        </ListItemAvatar>
-        <ListItemText primary="Sitemark-web" secondary="Web app" />
-      </MenuItem>
-      <MenuItem value={10}>
-        <ListItemAvatar>
-          <Avatar alt="Sitemark App">
-            <SmartphoneRoundedIcon sx={{ fontSize: '1rem' }} />
-          </Avatar>
-        </ListItemAvatar>
-        <ListItemText primary="Sitemark-app" secondary="Mobile application" />
-      </MenuItem>
-      <MenuItem value={20}>
-        <ListItemAvatar>
-          <Avatar alt="Sitemark Store">
-            <DevicesRoundedIcon sx={{ fontSize: '1rem' }} />
-          </Avatar>
-        </ListItemAvatar>
-        <ListItemText primary="Sitemark-Store" secondary="Web app" />
-      </MenuItem>
-      <ListSubheader>Development</ListSubheader>
-      <MenuItem value={30}>
-        <ListItemAvatar>
-          <Avatar alt="Sitemark Store">
-            <ConstructionRoundedIcon sx={{ fontSize: '1rem' }} />
-          </Avatar>
-        </ListItemAvatar>
-        <ListItemText primary="Sitemark-Admin" secondary="Web app" />
-      </MenuItem>
+      <ListSubheader sx={{ pt: 0 }}>Estancias</ListSubheader>
+      {branches.map((branch: any, index: number) => (
+        <MenuItem key={branch.InstitutionId} value={index == 0 ? '' : branch.InstitutionId}>
+          <ListItemAvatar>
+            <Avatar alt={branch.PublicName}>
+              <DevicesRoundedIcon sx={{ fontSize: '1rem' }} />
+            </Avatar>
+          </ListItemAvatar>
+          <ListItemText primary={branch.PublicName} secondary={branch.Address} />
+        </MenuItem>
+      ))}
       <Divider sx={{ mx: -1 }} />
       <MenuItem value={40}>
         <ListItemIcon>

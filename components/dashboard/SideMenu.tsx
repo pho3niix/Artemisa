@@ -7,8 +7,9 @@ import Stack from '@mui/material/Stack';
 import Typography from '@mui/material/Typography';
 import SelectContent from './SelectContent';
 import MenuContent from './MenuContent';
-import CardAlert from './CardAlert';
 import OptionsMenu from './OptionsMenu';
+import { useEffect, useState } from 'react';
+import { useAuth } from '../../utils/MyContext';
 
 const drawerWidth = 240;
 
@@ -24,6 +25,8 @@ const Drawer = styled(MuiDrawer)({
 });
 
 export default function SideMenu() {
+  const { userData } = useAuth();
+
   return (
     <Drawer
       variant="permanent"
@@ -53,7 +56,7 @@ export default function SideMenu() {
         }}
       >
         <MenuContent />
-        <CardAlert />
+        {/* <CardAlert /> */}
       </Box>
       <Stack
         direction="row"
@@ -73,10 +76,10 @@ export default function SideMenu() {
         />
         <Box sx={{ mr: 'auto' }}>
           <Typography variant="body2" sx={{ fontWeight: 500, lineHeight: '16px' }}>
-            Riley Carter
+            {userData?.FullName}
           </Typography>
-          <Typography variant="caption" sx={{ color: 'text.secondary' }}>
-            riley@email.com
+          <Typography variant="caption" sx={{ color: 'text.secondary', wordBreak: 'break-all', overflowWrap: 'break-word' }}>
+            {userData?.Email}
           </Typography>
         </Box>
         <OptionsMenu />

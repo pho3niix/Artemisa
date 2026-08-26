@@ -58,13 +58,10 @@ export default function MainGrid() {
         sx={{ mb: (theme) => theme.spacing(2) }}
       >
         {data.map((card, index) => (
-          <Grid key={index} size={{ xs: 12, sm: 6, lg: 3 }}>
+          <Grid key={index} size={{ xs: 12, sm: 6, lg: 4 }}>
             <StatCard {...card} />
           </Grid>
         ))}
-        <Grid size={{ xs: 12, sm: 6, lg: 3 }}>
-          <HighlightedCard />
-        </Grid>
         <Grid size={{ xs: 12, md: 6 }}>
           <SessionsChart />
         </Grid>

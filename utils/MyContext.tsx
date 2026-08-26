@@ -1,6 +1,8 @@
 'use client';
 
 import { createContext, useContext, useState } from 'react';
+import { httpClient } from '../utils/HttpClient';
+import { useEffect } from 'react';
 
 interface UserData {
   UserId: string;
@@ -15,6 +17,8 @@ interface AuthContextType {
   userData: UserData | null;
   setUserData: (data: UserData | null) => void;
   setLoading: (value: boolean) => void;
+  profileData?: any; // Optional property for profile data
+  fetchProfile?: () => Promise<void>; // Optional method to fetch profile data
 }
 
 const AuthContext = createContext<AuthContextType>({
@@ -24,6 +28,8 @@ const AuthContext = createContext<AuthContextType>({
   userData: null,
   setUserData: () => { },
   setLoading: () => { },
+  profileData: null,
+  fetchProfile: async () => { },
 });
 
 export const AuthProvider = ({ children }: { children: React.ReactNode }) => {
@@ -41,6 +47,45 @@ export const AuthProvider = ({ children }: { children: React.ReactNode }) => {
 
   const [loading, setLoading] = useState(false);
 
+  const [profileData, setProfileData] = useState<any>(() => {
+    if (typeof window !== 'undefined') {
+      const savedProfile = localStorage.getItem('profileData');
+      return savedProfile ? JSON.parse(savedProfile) : null;
+    }
+    return null;
+  });
+
+  const fetchProfile = async () => {
+    if (!userData?.UserId) return;
+
+    if (profileData) return;
+
+    try {
+      const response = await httpClient(`/api/v1/sp/users/:id/profile`, {
+        method: 'GET',
+        pathParams: { id: userData.UserId },
+      })
+
+      const Data = await response.json();
+
+      if (!response.ok) {
+        throw new Error(JSON.stringify(Data));
+      } else {
+        setProfileData(Data);
+        localStorage.setItem('profileData', JSON.stringify(Data.results));
+      }
+
+    } catch (error) {
+      console.error('Error fetching profile data:', error);
+    }
+  }
+
+  useEffect(() => {
+    if (isAuthenticated && userData?.UserId && !profileData) {
+      fetchProfile();
+    }
+  }, [isAuthenticated, userData?.UserId]);
+
   const setUserData = (data: UserData | null) => {
     setUserDataState(data);
     if (data) {
@@ -50,12 +95,14 @@ export const AuthProvider = ({ children }: { children: React.ReactNode }) => {
     } else {
       localStorage.removeItem('userData');
       localStorage.removeItem('is_authenticated');
+      localStorage.removeItem('profileData');
       setIsAuthenticated(false);
+      setProfileData(null);
     }
   };
-  
+
   return (
-    <AuthContext.Provider value={{ isAuthenticated, setIsAuthenticated, loading, userData, setUserData, setLoading }}>
+    <AuthContext.Provider value={{ isAuthenticated, setIsAuthenticated, loading, userData, setUserData, setLoading, profileData }}>
       {children}
     </AuthContext.Provider>
   );
