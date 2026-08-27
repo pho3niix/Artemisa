@@ -136,7 +136,7 @@ export default function SignIn(props: { disableCustomTheme?: boolean }) {
           Email: data.get('email'),
           Password: data.get('password'),
         },
-        skipAuth: false,
+        skipAuth: true,
       });
 
       const Data = await response.json();

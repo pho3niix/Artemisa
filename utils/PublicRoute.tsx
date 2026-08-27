@@ -20,10 +20,10 @@ export const PublicRoute = ({ children }: { children: React.ReactNode }) => {
         }
     }, [isMounted, loading, isAuthenticated, router]);
 
-    // Mientras monta o valida, mostramos pantalla en blanco para evitar destellos del formulario
-    if (!isMounted || loading || isAuthenticated) {
-        return null; 
-    }
+    // // Mientras monta o valida, mostramos pantalla en blanco para evitar destellos del formulario
+    // if (!isMounted || loading || isAuthenticated) {
+    //     return null; 
+    // }
 
     return <>{children}</>;
 };
