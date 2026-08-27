@@ -21,9 +21,9 @@ export const ProtectedRoute = ({ children }: { children: React.ReactNode }) => {
         }
     }, [isMounted, loading, isAuthenticated, router, pathname]);
 
-    // if (!isMounted || loading || !isAuthenticated) {
-    //     return null; 
-    // }
+    if (!isMounted || loading || !isAuthenticated) {
+        return null; 
+    }
 
     return <>{children}</>;
 };
