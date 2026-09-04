@@ -31,12 +31,12 @@ export interface ICard {
 
 export default function CardComponent({ properties }: { properties: ICard }) {
     return (
-        <Card sx={{ minWidth: 275, marginBottom: 2}}>
+        <Card sx={{ minWidth: 275, marginBottom: 2 }}>
             <CardActionArea>
                 <CardMedia
                     component="img"
                     height="140"
-                    // image={properties.picture}
+                    image={`https://ui-avatars.com/api/?name=${properties.PublicName}&background=random&size=128`}
                     alt={properties.PublicName}
                 />
                 <CardContent>
