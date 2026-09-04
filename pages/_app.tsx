@@ -2,6 +2,7 @@
 
 import '../utils/global.css';
 import '../utils/normalize.css';
+import '../components/card_container/container.css';
 import { AuthProvider } from '../utils/MyContext';
 import { Geist, Geist_Mono } from "next/font/google";
 import type { Metadata } from "next";
