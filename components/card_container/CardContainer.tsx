@@ -11,7 +11,7 @@ import {
 } from '@mui/material';;
 import CardComponent, { ICard } from './Card';
 
-interface CardContainerProps {
+export interface CardContainerProps {
     cardsData: ICard[];
     onValue?: (value: string) => void;
     onLoading?: boolean;
