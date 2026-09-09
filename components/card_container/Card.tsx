@@ -77,14 +77,12 @@ export default function CardComponent({ properties }: { properties: ICard }) {
             const Data = await response.json();
 
             if (!response.ok) {
-                
-                console.error('Error editing branch:', Data);
+                console.error('Error Removed branch:', Data);
                 toast.error(Data.message || "Error al editar la sucursal");
                 
             } else {
-                const data = await response.json();
-                console.log('Branch edited successfully:', data);
-                toast.success(data.message);
+                console.log('Branch Removed successfully:', Data);
+                toast.success(Data.message);
             }
 
         } catch (error) {
