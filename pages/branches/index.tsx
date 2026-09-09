@@ -29,7 +29,7 @@ export default function Dashboard() {
     const { userData } = useAuth();
     // const [profileData, setProfileData] = useState(null);
 
-    const [cards, setCards] = useState([]);
+    const [cards, setCards] = useState<ICard[]>([]);
     const [valueSearch, setValueSearch] = useState("");
     const [openDialog, setOpenDialog] = useState(false);
     const [branchData, setBranchData] = useState({
@@ -163,6 +163,12 @@ export default function Dashboard() {
         setValueSearch(text);
     }
 
+    const RemoveBranchFromList = (institutionId: string) => {
+        setCards((currentCards) =>
+            currentCards.filter((card) => card.InstitutionId !== institutionId)
+        );
+    };
+
     return (
         <DashboardLayout>
             <Container maxWidth={false}>
@@ -277,7 +283,12 @@ export default function Dashboard() {
                         </DialogActions>
                     </Dialog>
                 </Box>
-                <CardContainer cardsData={cards} onValue={SearchText} onLoading={loading} />
+                <CardContainer
+                    cardsData={cards}
+                    onValue={SearchText}
+                    onLoading={loading}
+                    onDelete={RemoveBranchFromList}
+                />
             </Container>
         </DashboardLayout>
     );
