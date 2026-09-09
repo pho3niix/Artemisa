@@ -34,7 +34,12 @@ export interface ICard {
     StateId?: string;
 }
 
-export default function CardComponent({ properties }: { properties: ICard }) {
+interface CardComponentProps {
+    properties: ICard;
+    onDelete?: (institutionId: string) => void;
+}
+
+export default function CardComponent({ properties, onDelete }: CardComponentProps) {
     const [anchorEl, setAnchorEl] = useState<null | HTMLElement>(null);
     const { userData } = useAuth();
     const open = Boolean(anchorEl);
@@ -74,19 +79,29 @@ export default function CardComponent({ properties }: { properties: ICard }) {
                 }
             });
             
-            const Data = await response.json();
+            const responseText = await response.text();
+            let Data: { message?: string } = {};
+
+            if (responseText) {
+                try {
+                    Data = JSON.parse(responseText);
+                } catch (parseError) {
+                    console.error('Invalid delete branch response:', parseError);
+                }
+            }
 
             if (!response.ok) {
-                console.error('Error Removed branch:', Data);
-                toast.error(Data.message || "Error al editar la sucursal");
-                
+                console.error('Error deleting branch:', Data);
+                toast.error(Data.message || "Error al eliminar la sucursal");
             } else {
-                console.log('Branch Removed successfully:', Data);
-                toast.success(Data.message);
+                if (properties.InstitutionId) {
+                    onDelete?.(properties.InstitutionId);
+                }
+                toast.success(Data.message || "Sucursal eliminada exitosamente");
             }
 
         } catch (error) {
-            console.error('Error al editar la tarjeta:', error);
+            console.error('Error al eliminar la tarjeta:', error);
         }
     };
 

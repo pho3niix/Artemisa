@@ -15,9 +15,10 @@ export interface CardContainerProps {
     cardsData: ICard[];
     onValue?: (value: string) => void;
     onLoading?: boolean;
+    onDelete?: (institutionId: string) => void;
 }
 
-export default function CardContainer({ cardsData, onValue, onLoading }: CardContainerProps) {
+export default function CardContainer({ cardsData, onValue, onLoading, onDelete }: CardContainerProps) {
     const [search, setSearch] = useState("");
 
     const onTyping = (value: string) => {
@@ -48,7 +49,7 @@ export default function CardContainer({ cardsData, onValue, onLoading }: CardCon
                 ) : cardsData.length > 0 ? (
                     cardsData.map((card, index) => (
                         <Grid size={{ xs: 12, sm: 6, md: 4, lg: 3 }} key={card.InstitutionId || index}>
-                            <CardComponent properties={card} />
+                            <CardComponent properties={card} onDelete={onDelete} />
                         </Grid>
                     ))
                 ) : (
