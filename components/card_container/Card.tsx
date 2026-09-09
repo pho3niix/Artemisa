@@ -13,6 +13,12 @@ import MoreVertIcon from '@mui/icons-material/MoreVert';
 import BorderColorIcon from '@mui/icons-material/BorderColor';
 import HighlightOffIcon from '@mui/icons-material/HighlightOff';
 import Box from '@mui/material/Box';
+import Dialog from '@mui/material/Dialog';
+import DialogTitle from '@mui/material/DialogTitle';
+import DialogContent from '@mui/material/DialogContent';
+import DialogContentText from '@mui/material/DialogContentText';
+import DialogActions from '@mui/material/DialogActions';
+import Button from '@mui/material/Button';
 import { useState } from 'react';
 import { useAuth } from '../../utils/MyContext';
 import { httpClient } from '../../utils/HttpClient';
@@ -41,6 +47,7 @@ interface CardComponentProps {
 
 export default function CardComponent({ properties, onDelete }: CardComponentProps) {
     const [anchorEl, setAnchorEl] = useState<null | HTMLElement>(null);
+    const [isConfirmOpen, setIsConfirmOpen] = useState(false);
     const { userData } = useAuth();
     const open = Boolean(anchorEl);
 
@@ -54,15 +61,24 @@ export default function CardComponent({ properties, onDelete }: CardComponentPro
         setAnchorEl(null);
     };
 
+    const handleOpenConfirm = (event: React.MouseEvent) => {
+        event.stopPropagation();
+        handleMenuClose();
+        setIsConfirmOpen(true);
+    };
+
+    const handleCloseConfirm = () => {
+        setIsConfirmOpen(false);
+    };
+
     async function handleEdit(event: React.MouseEvent) {
         event.stopPropagation();
         handleMenuClose();
         // Lógica para editar
     };
 
-    const handleDelete = async (event: React.MouseEvent) => {
-        event.stopPropagation();
-        handleMenuClose();
+    const handleDelete = async () => {
+        handleCloseConfirm();
 
         try {
             const UserId = userData?.UserId;
@@ -110,61 +126,85 @@ export default function CardComponent({ properties, onDelete }: CardComponentPro
     }
 
     return (
-        <Card sx={{ minWidth: 275, marginBottom: 2, position: 'relative' }}>
-            {/* 1. Área clickeable principal */}
-            <CardActionArea onClick={handleCardClick}>
-                <CardMedia
-                    component="img"
-                    height="140"
-                    image={`https://ui-avatars.com/api/?name=${properties.PublicName}&background=random&size=128`}
-                    alt={properties.PublicName}
-                />
+        <>
+            <Card sx={{ minWidth: 275, marginBottom: 2, position: 'relative' }}>
+                {/* 1. Área clickeable principal */}
+                <CardActionArea onClick={handleCardClick}>
+                    <CardMedia
+                        component="img"
+                        height="140"
+                        image={`https://ui-avatars.com/api/?name=${properties.PublicName}&background=random&size=128`}
+                        alt={properties.PublicName}
+                    />
 
-                <CardContent sx={{ pb: 5 }}>
-                    <Typography gutterBottom variant="h5" component="div">
-                        {properties.PublicName}
-                    </Typography>
-                    <Typography variant="body2" color="text.secondary">
-                        Address: {properties.Address}, {properties.CityName}, {properties.State?.Name}, {properties.ZipCode}
-                    </Typography>
-                    <Typography variant="body2" color="text.secondary">
-                        Phone: {properties.PhoneNumber}
-                    </Typography>
-                </CardContent>
-            </CardActionArea>
+                    <CardContent sx={{ pb: 5 }}>
+                        <Typography gutterBottom variant="h5" component="div">
+                            {properties.PublicName}
+                        </Typography>
+                        <Typography variant="body2" color="text.secondary">
+                            Address: {properties.Address}, {properties.CityName}, {properties.State?.Name}, {properties.ZipCode}
+                        </Typography>
+                        <Typography variant="body2" color="text.secondary">
+                            Phone: {properties.PhoneNumber}
+                        </Typography>
+                    </CardContent>
+                </CardActionArea>
 
-            {/* 2. Botón fuera del CardActionArea (evita anidación de buttons) */}
-            <Box sx={{ position: 'absolute', bottom: 8, right: 8, zIndex: 2 }}>
-                <IconButton
-                    aria-label="opciones"
-                    aria-controls={open ? 'card-menu' : undefined}
-                    aria-haspopup="true"
-                    aria-expanded={open ? 'true' : undefined}
-                    onClick={handleMenuOpen}
-                    size="small"
+                {/* 2. Botón fuera del CardActionArea */}
+                <Box sx={{ position: 'absolute', bottom: 8, right: 8, zIndex: 2 }}>
+                    <IconButton
+                        aria-label="opciones"
+                        aria-controls={open ? 'card-menu' : undefined}
+                        aria-haspopup="true"
+                        aria-expanded={open ? 'true' : undefined}
+                        onClick={handleMenuOpen}
+                        size="small"
+                    >
+                        <MoreVertIcon />
+                    </IconButton>
+                </Box>
+
+                {/* 3. Menú de opciones */}
+                <Menu
+                    id="card-menu"
+                    anchorEl={anchorEl}
+                    open={open}
+                    onClose={() => handleMenuClose()}
+                    anchorOrigin={{ vertical: 'bottom', horizontal: 'right' }}
+                    transformOrigin={{ vertical: 'top', horizontal: 'right' }}
                 >
-                    <MoreVertIcon />
-                </IconButton>
-            </Box>
+                    <MenuItem onClick={handleEdit}>
+                        <ListItemIcon><BorderColorIcon fontSize="small" color="primary" /></ListItemIcon>
+                        <ListItemText>Editar</ListItemText>
+                    </MenuItem>
+                    <MenuItem onClick={handleOpenConfirm}>
+                        <ListItemIcon><HighlightOffIcon fontSize="small" color="error" /></ListItemIcon>
+                        <ListItemText color="error">Eliminar</ListItemText>
+                    </MenuItem>
+                </Menu>
+            </Card>
 
-            {/* 3. Menú de opciones */}
-            <Menu
-                id="card-menu"
-                anchorEl={anchorEl}
-                open={open}
-                onClose={() => handleMenuClose()}
-                anchorOrigin={{ vertical: 'bottom', horizontal: 'right' }}
-                transformOrigin={{ vertical: 'top', horizontal: 'right' }}
+            {/* 4. Modal de confirmación */}
+            <Dialog
+                open={isConfirmOpen}
+                onClose={handleCloseConfirm}
+                onClick={(e) => e.stopPropagation()}
             >
-                <MenuItem onClick={handleEdit}>
-                    <ListItemIcon><BorderColorIcon fontSize="small" color="primary" /></ListItemIcon>
-                    <ListItemText>Editar</ListItemText>
-                </MenuItem>
-                <MenuItem onClick={handleDelete}>
-                    <ListItemIcon><HighlightOffIcon fontSize="small" color="error" /></ListItemIcon>
-                    <ListItemText color="error">Eliminar</ListItemText>
-                </MenuItem>
-            </Menu>
-        </Card>
+                <DialogTitle>Confirmar eliminación</DialogTitle>
+                <DialogContent>
+                    <DialogContentText>
+                        ¿Estás seguro de que deseas eliminar la sucursal <strong>{properties.PublicName}</strong>? Esta acción no se puede deshacer.
+                    </DialogContentText>
+                </DialogContent>
+                <DialogActions>
+                    <Button onClick={handleCloseConfirm} color="inherit">
+                        Cancelar
+                    </Button>
+                    <Button onClick={handleDelete} color="error" variant="contained" autoFocus>
+                        Aceptar
+                    </Button>
+                </DialogActions>
+            </Dialog>
+        </>
     );
 }
